@@ -4,6 +4,16 @@ import shutil
 from config import wsl_machine_name, wsl_user, wsl_paswd
 import stat
 
+def handle_remove_readonly(func, path, exc):
+    import errno
+    excvalue = exc[1]
+    if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
+        # Change the file to writable
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    else:
+        raise
+
 def is_gptsovits_env_installed():
     result = subprocess.run([
         "wsl",
@@ -29,15 +39,51 @@ def is_gptsovits_env_installed():
             return True
     return False
 
-def handle_remove_readonly(func, path, exc):
-    import errno
-    excvalue = exc[1]
-    if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
-        # Change the file to writable
-        os.chmod(path, stat.S_IWRITE)
-        func(path)
-    else:
-        raise
+def install_conda():
+    subprocess.run([
+     'wsl', '-d', wsl_machine_name, '-u', wsl_user,
+     'bash', '-ilc',
+     'curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh'
+     ], check=True)
+
+    subprocess.run([
+        'wsl', '-d', wsl_machine_name, '-u', wsl_user,
+        'bash', '-ilc',
+        'bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda3'
+    ], check=True)
+
+    subprocess.run([
+        'wsl', '-d', wsl_machine_name, '-u', wsl_user,
+        'bash', '-ilc',
+        '$HOME/miniconda3/bin/conda init'
+    ], check=True)
+
+    subprocess.run([
+        'wsl', '-d', wsl_machine_name, '-u', wsl_user,
+        'bash', '-ilc',
+        'rm Miniconda3-latest-Linux-x86_64.sh'
+    ], check=True)
+
+    print("Miniconda installation complete!")
+
+def create_conda_env(wsl_machine_name, wsl_user, env_name="GPTSoVits", python_version="3.10"):
+    channels = [
+        "https://repo.anaconda.com/pkgs/main",
+        "https://repo.anaconda.com/pkgs/r"
+    ]
+
+    for channel in channels:
+        subprocess.run([
+            "wsl", "-d", wsl_machine_name, "-u", wsl_user,
+            f"/home/{wsl_user}/miniconda3/bin/conda", "tos", "accept",
+            "--override-channels", "--channel", channel
+        ], check=True)
+
+    subprocess.run([
+        "wsl", "-d", wsl_machine_name, "-u", wsl_user,
+        f"/home/{wsl_user}/miniconda3/bin/conda", "create",
+        "-n", env_name, f"python={python_version}", "-y"
+    ], check=True)
 
 def install_gpt_sovits():
  # pull gpt sovits git
@@ -52,10 +98,7 @@ def install_gpt_sovits():
      pass
  else:
    # Create conda env
-   subprocess.run([
-       'wsl', '-d', wsl_machine_name, '-u', wsl_user,
-       '/home/andre/miniconda3/bin/conda', 'create', '-n', 'GPTSoVits', 'python=3.10', '-y'
-   ])
+   create_conda_env(wsl_machine_name, wsl_user)
  
  # Install requirments
  shutil.move("GPT-SoVITS/requirements.txt", "requirements.txt")
@@ -82,7 +125,6 @@ def install_gpt_sovits():
  shutil.move("requirements.txt", "GPT-SoVITS/requirements.txt")
  shutil.move("extra-req.txt", "GPT-SoVITS/extra-req.txt")
  
- 
  # git clone pretrained model
  subprocess.run([
      'git', 'clone', 
@@ -104,4 +146,10 @@ def install_gpt_sovits():
 
 
 if __name__ == "__main__":
-    install_gpt_sovits()
+    try:
+     subprocess.run(['wsl', '-d', wsl_machine_name, '-u', wsl_user, 'bash', '-ilc', 'conda --version'], check=True)
+     pass
+    except (subprocess.CalledProcessError, FileNotFoundError):
+     install_conda()
+
+    install_gpt_sovits() 
