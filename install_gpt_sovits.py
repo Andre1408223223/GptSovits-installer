@@ -146,10 +146,18 @@ def install_gpt_sovits():
 
 
 if __name__ == "__main__":
-    try:
-     subprocess.run(['wsl', '-d', wsl_machine_name, '-u', wsl_user, 'bash', '-ilc', 'conda --version'], check=True)
-     pass
-    except (subprocess.CalledProcessError, FileNotFoundError):
-     install_conda()
+    os = os.name
 
-    install_gpt_sovits() 
+    if os == "nt":
+    #    Windows
+     try:
+      subprocess.run(['wsl', '-d', wsl_machine_name, '-u', wsl_user, 'bash', '-ilc', 'conda --version'], check=True)
+      pass
+     except (subprocess.CalledProcessError, FileNotFoundError):
+      install_conda()
+
+     install_gpt_sovits() 
+    elif os == "posix":
+    # Linux
+     pass
+    
