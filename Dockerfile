@@ -1,16 +1,10 @@
-FROM alpine:latest
+FROM python:3.10-slim
 
-# Install bash, wget, git
-RUN apk add --no-cache bash wget git
-
-# Set working directory
 WORKDIR /app
 
-# Copy the script
-COPY start.sh /start.sh
+RUN apt-get update && apt-get install -y git && apt-get clean
 
-# Make it executable
+COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Use bash instead of sh
 CMD ["/bin/bash", "/start.sh"]
