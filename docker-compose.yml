@@ -2,10 +2,7 @@ version: "3.8"
 
 services:
   gpt-sovits:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: gpt-sovits-container
-    ports:
-      - "7865:7865" # Expose Gradio or Flask if api.py runs a server
-    restart: unless-stopped
+    build: .
+    volumes:
+      - ./GptSovits:/app
+    tty: true
