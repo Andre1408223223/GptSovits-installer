@@ -1,11 +1,16 @@
 FROM alpine:latest
 
-# Install git and bash (bash optional, sh is fine)
-RUN apk update && apk add --no-cache git
+# Install bash, wget, git
+RUN apk add --no-cache bash wget git
 
+# Set working directory
 WORKDIR /app
 
+# Copy the script
 COPY start.sh /start.sh
+
+# Make it executable
 RUN chmod +x /start.sh
 
-CMD ["/start.sh"]
+# Use bash instead of sh
+CMD ["/bin/bash", "/start.sh"]

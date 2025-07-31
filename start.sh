@@ -1,4 +1,6 @@
-#!/bin/sh
+# !/usr/bin/env bash
+
+# Only clone if not already installed
 if [ ! -e /app/api.py ]; then
     echo "Installing GPT-SoVITS..."
 
@@ -7,17 +9,14 @@ if [ ! -e /app/api.py ]; then
 
     echo "Moving contents up one level..."
     mv /app/gpt-temp/* /app
-    mv /app/gpt-temp/.* /app 2>/dev/null || true
-
-    echo "Removing temporary folder..."
+    mv /app/gpt-temp/.git /app
     rm -rf /app/gpt-temp
 
-    # inatall dependesies
-
-    echo "installed succsessfully"
+    echo "Installed successfully"
 else
     echo "GPT-SoVITS already installed"
 fi
 
-# Keep container running
+
+# Prevent container from exiting
 tail -f /dev/null
