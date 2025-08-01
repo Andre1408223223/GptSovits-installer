@@ -5,6 +5,4 @@ services:
     build: .
     ports:
       - "9880:9880"
-    volumes:
-      - ./GptSovits:/app
     tty: true

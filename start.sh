@@ -4,38 +4,43 @@ set -e
 # Initialize conda
 source /opt/conda/etc/profile.d/conda.sh
 
-# Activate environment
+# Activate conda environment
 conda activate gpt
 
-# If GPT-SoVITS is not installed yet
-if [ ! -e /app/api.py ]; then
+# Check if installation has already been done
+if [ ! -f /opt/gpt-installed.flag ]; then
     echo "Installing GPT-SoVITS..."
 
-    echo "Cloning GPT-SoVITS into /app/gpt-temp..."
-    git clone https://github.com/RVC-Boss/GPT-SoVITS.git /app/gpt-temp
+    # Clone GPT-SoVITS repo
+    git clone https://github.com/RVC-Boss/GPT-SoVITS.git /app
 
-    echo "Moving contents up one level..."
-    mv /app/gpt-temp/* /app
-    mv /app/gpt-temp/.git /app
-    rm -rf /app/gpt-temp
+    # add status to api call
+    python3 -c "with open('/app/api.py', 'a') as f: f.write('\n@app.get(\"/status\")\nasync def get_status():\n    return JSONResponse(content={\"status\": \"online\"})\n')"
 
-    echo "Installing Python dependencies into venv..."
+    # Install python dependencies inside conda env
     pip install --upgrade pip
     pip install --no-cache-dir -r /app/extra-req.txt
     pip install --no-cache-dir -r /app/requirements.txt
 
-    echo "Cloning pretrained models..."
+    # Clone pretrained models
     rm -rf /app/GPT_SoVITS/pretrained_models
     git clone https://huggingface.co/lj1995/GPT-SoVITS /app/GPT_SoVITS/pretrained_models
-    
-    echo "pulling lfs files..."
+
+    # Pull Git LFS files
     cd /app/GPT_SoVITS/pretrained_models
     git lfs pull
 
-    echo "Installed GPT-SoVITS successfully"
+    # Mark installation done
+    touch /opt/gpt-installed.flag
+
+    echo "Installation complete!"
 else
-    echo "GPT-SoVITS already installed, using existing environment"
+    echo "GPT-SoVITS already installed, skipping install"
 fi
 
-# Your commands here
-tail -f /dev/null
+echo "starting api"
+
+# Start the api
+cd /app
+
+python3 api.py
