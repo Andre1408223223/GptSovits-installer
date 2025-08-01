@@ -1,6 +1,15 @@
-# !/usr/bin/env bash
+#!/usr/bin/env bash
 
-# Only clone if not already installed
+# Create virtual environment if not exists
+if [ ! -d "venv" ]; then
+    echo "Creating Python virtual environment in /app/venv..."
+    python3 -m venv venv
+fi
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# If GPT-SoVITS is not installed yet
 if [ ! -e /app/api.py ]; then
     echo "Installing GPT-SoVITS..."
 
@@ -12,18 +21,21 @@ if [ ! -e /app/api.py ]; then
     mv /app/gpt-temp/.git /app
     rm -rf /app/gpt-temp
 
-    echo "instailling cmake"
-    apt install -y build-essential cmake
-    echo "Installing Python dependencies from requirements.txt..."
+    echo "Installing Python dependencies into venv..."
+    pip install --upgrade pip
     pip install --no-cache-dir -r /app/extra-req.txt
     pip install --no-cache-dir -r /app/requirements.txt
 
-    echo "Installed successfully"
+    echo "Cloning pretrained models..."
+    rm -rf /app/GPT_SoVITS/pretrained_models
+    git clone https://huggingface.co/lj1995/GPT-SoVITS /app/GPT_SoVITS/pretrained_models
+
+    echo "Installed GPT-SoVITS successfully"
 else
-    echo "GPT-SoVITS already installed"
+    echo "GPT-SoVITS already installed, using existing environment"
 fi
 
+which python3
 
-
-# Prevent container from exiting
+# Keep container running (replace with your actual entry command if needed)
 tail -f /dev/null
