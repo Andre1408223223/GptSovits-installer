@@ -1,13 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/bash
+set -e
 
-# Create virtual environment if not exists
-if [ ! -d "venv" ]; then
-    echo "Creating Python virtual environment in /app/venv..."
-    python3 -m venv venv
-fi
+# Initialize conda
+source /opt/conda/etc/profile.d/conda.sh
 
-# Activate the virtual environment
-source venv/bin/activate
+# Activate environment
+conda activate gpt
 
 # If GPT-SoVITS is not installed yet
 if [ ! -e /app/api.py ]; then
@@ -35,7 +33,5 @@ else
     echo "GPT-SoVITS already installed, using existing environment"
 fi
 
-which python3
-
-# Keep container running (replace with your actual entry command if needed)
+# Your commands here
 tail -f /dev/null

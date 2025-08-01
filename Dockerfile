@@ -1,6 +1,9 @@
-FROM python:3.10-slim
+FROM continuumio/miniconda3
 
 WORKDIR /app
+
+# Create the environment 'gpt' during build time
+RUN conda create -y -n gpt python=3.10 && conda clean -afy
 
 # Install essential build tools
 RUN apt-get update && apt-get install -y \
