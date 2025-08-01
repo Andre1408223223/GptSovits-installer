@@ -15,7 +15,7 @@ if [ ! -f /opt/gpt-installed.flag ]; then
     git clone https://github.com/RVC-Boss/GPT-SoVITS.git /app
 
     # add status to api call
-    python3 -c "with open('/app/api.py', 'a') as f: f.write('\n@app.get(\"/status\")\nasync def get_status():\n    return JSONResponse(content={\"status\": \"online\"})\n')"
+    python3 -c "path = '/app/api.py'; new_code = '\n@app.get(\"/status\")\nasync def get_status():\n    return JSONResponse(content={\"status\": \"online\"})\n'; lines = open(path).readlines(); i = next((i for i, l in enumerate(lines) if '__main__' in l), len(lines)); lines.insert(i, new_code); open(path, 'w').writelines(lines)"
 
     # Install python dependencies inside conda env
     pip install --upgrade pip
