@@ -12,7 +12,11 @@ RUN apt-get update && apt-get install -y \
     cmake \
     make \
     g++ \
-    && apt-get clean
+    git-lfs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 9880
 
 COPY start.sh /start.sh
 RUN chmod +x /start.sh

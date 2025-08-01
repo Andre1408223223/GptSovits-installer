@@ -27,6 +27,10 @@ if [ ! -e /app/api.py ]; then
     echo "Cloning pretrained models..."
     rm -rf /app/GPT_SoVITS/pretrained_models
     git clone https://huggingface.co/lj1995/GPT-SoVITS /app/GPT_SoVITS/pretrained_models
+    
+    echo "pulling lfs files..."
+    cd /app/GPT_SoVITS/pretrained_models
+    git lfs pull
 
     echo "Installed GPT-SoVITS successfully"
 else
