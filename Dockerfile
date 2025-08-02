@@ -1,3 +1,4 @@
+
 FROM continuumio/miniconda3
 
 WORKDIR /app
@@ -13,8 +14,8 @@ RUN apt-get update && apt-get install -y \
     make \
     g++ \
     git-lfs \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 9880
 
