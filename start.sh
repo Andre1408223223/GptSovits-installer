@@ -8,7 +8,7 @@ source /opt/conda/etc/profile.d/conda.sh
 conda activate gpt
 
 # Check if installation has already been done
-if [ ! -f /app/gpt-installed.flag ]; then
+if [ ! -f /app/shared/gpt-installed.flag ]; then
     echo "Installing GPT-SoVITS..."
 
     # Clone GPT-SoVITS repo
@@ -35,7 +35,7 @@ if [ ! -f /app/gpt-installed.flag ]; then
     git lfs pull
 
     # Mark installation done
-    touch /app/gpt-installed.flag
+    touch /app/shared/gpt-installed.flag
 
     echo "Installation complete!"
 else
