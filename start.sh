@@ -27,14 +27,15 @@ if [ ! -f /app/shared/gpt-installed.flag ]; then
     python3 -c "import nltk; nltk.download('averaged_perceptron_tagger_eng')"
 
     # Clone pretrained models
-    rm -rf /app/GPT_SoVITS/pretrained_models
-    git clone https://huggingface.co/lj1995/GPT-SoVITS /app/GPT_SoVITS/pretrained_models
+    rm -rf /app/GPT-SoVITS/GPT_SoVITS/pretrained_models
+    git clone https://huggingface.co/lj1995/GPT-SoVITS /app/GPT-SoVITS/GPT_SoVITS/pretrained_models
 
-    Pull Git LFS files
-    cd /app/GPT_SoVITS/pretrained_models
+    # Pull Git LFS files
+    cd /app/GPT-SoVITS/GPT_SoVITS/pretrained_models
     git lfs pull
 
     # Mark installation done
+    mkdir -p /app/shared/
     touch /app/shared/gpt-installed.flag
 
     echo "Installation complete!"
@@ -46,5 +47,4 @@ echo "starting api"
 
 # Start the api
 cd /app/GPT-SoVITS
-
 python3 api_v2.py
