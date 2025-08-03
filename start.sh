@@ -15,7 +15,7 @@ if [ ! -f /app/shared/gpt-installed.flag ]; then
     git clone https://github.com/RVC-Boss/GPT-SoVITS.git /app/GPT-SoVITS
 
     # add status to api call
-    python3 -c "path = '/app/GPT-SoVITS/api_v2.py'; new_code = '\n@app.get(\"/status\")\nasync def get_status():\n    return JSONResponse(content={\"status\": \"online\"})\n'; lines = open(path).readlines(); i = next((i for i, l in enumerate(lines) if '__main__' in l), len(lines)); lines.insert(i, new_code); open(path, 'w').writelines(lines)"
+    python3 -c "path = '/app/GPT-SoVITS/api_v2.py'; new_code = '\n@APP.get(\"/status\")\nasync def get_status():\n    return JSONResponse(content={\"status\": \"online\"})\n'; lines = open(path).readlines(); i = next((i for i, l in enumerate(lines) if '__main__' in l), len(lines)); lines.insert(i, new_code); open(path, 'w').writelines(lines)"
 
     python3 -c "path='/app/GPT-SoVITS/api_v2.py'; lines=open(path).readlines(); lines=[line.replace('host=host', 'host=\"0.0.0.0\"') if 'uvicorn.run(' in line and 'host=host' in line else line for line in lines]; open(path,'w').writelines(lines)"
 
