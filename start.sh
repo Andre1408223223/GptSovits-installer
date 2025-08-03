@@ -24,15 +24,15 @@ if [ ! -f /app/gpt-installed.flag ]; then
     pip install --no-cache-dir -r /app/GPT-SoVITS/extra-req.txt
     pip install --no-cache-dir -r /app/GPT-SoVITS/requirements.txt
 
-    # python3 -c "import nltk; nltk.download('averaged_perceptron_tagger_eng')"
+    python3 -c "import nltk; nltk.download('averaged_perceptron_tagger_eng')"
 
-    # # Clone pretrained models
-    # rm -rf /app/GPT_SoVITS/pretrained_models
-    # git clone https://huggingface.co/lj1995/GPT-SoVITS /app/GPT_SoVITS/pretrained_models
+    # Clone pretrained models
+    rm -rf /app/GPT_SoVITS/pretrained_models
+    git clone https://huggingface.co/lj1995/GPT-SoVITS /app/GPT_SoVITS/pretrained_models
 
-    # Pull Git LFS files
-    # cd /app/GPT_SoVITS/pretrained_models
-    # git lfs pull
+    Pull Git LFS files
+    cd /app/GPT_SoVITS/pretrained_models
+    git lfs pull
 
     # Mark installation done
     touch /app/gpt-installed.flag
